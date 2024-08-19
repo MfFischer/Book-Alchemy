@@ -133,6 +133,12 @@ def delete_book(book_id):
     return redirect(url_for('home', message="Book deleted successfully!"))
 
 
+@app.route('/book/<int:book_id>')
+def book_detail(book_id):
+    book = Book.query.get_or_404(book_id)
+    return render_template('book_detail.html', book=book)
+
+
 if __name__ == '__main__':
     # Run the Flask application in debug mode
     app.run(debug=True)

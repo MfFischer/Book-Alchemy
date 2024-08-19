@@ -4,42 +4,54 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Library Home</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
-    <h1>Welcome to the Library</h1>
+    <header class="header">
+        <h1>📚 Book Alchemy</h1>
+    </header>
 
-    <!-- Display success message if any -->
-    {% if request.args.get('message') %}
-        <p style="color: green;">{{ request.args.get('message') }}</p>
-    {% endif %}
-
-    <!-- Search form -->
-    <form method="GET" action="{{ url_for('search') }}">
-        <label for="keyword">Search for a Book:</label><br>
-        <input type="text" id="keyword" name="keyword" placeholder="Enter keyword" required><br><br>
-        <input type="submit" value="Search">
-    </form>
-
-    <br><br>
-
-    <!-- List all books with delete button -->
-    <ul>
-        {% if books %}
-            {% for book in books %}
-                <li>
-                    {{ book.title }} by {{ book.author.name }} (Published: {{ book.publication_year }})
-                    <form method="POST" action="{{ url_for('delete_book', book_id=book.id) }}" style="display:inline;">
-                        <button type="submit" style="color: red;">Delete</button>
-                    </form>
-                </li>
-            {% endfor %}
-        {% else %}
-            <p>No books available in the library.</p>
+    <main class="main-content">
+        <!-- Display success message if any -->
+        {% if request.args.get('message') %}
+            <div class="message success">
+                <p>{{ request.args.get('message') }}</p>
+            </div>
         {% endif %}
-    </ul>
 
-    <br>
-    <a href="{{ url_for('add_author') }}">Add Author</a><br>
-    <a href="{{ url_for('add_book') }}">Add Book</a>
+        <!-- Centered search form -->
+        <div class="search-box">
+            <form method="GET" action="{{ url_for('search') }}">
+                <input type="text" id="keyword" name="keyword" placeholder="Search for a Book..." required>
+                <button type="submit">🔍 Search</button>
+            </form>
+        </div>
+
+        <!-- List of books -->
+        <ul class="book-list">
+            {% if books %}
+                {% for book in books %}
+                    <li class="book-item">
+                        <a href="{{ url_for('book_detail', book_id=book.id) }}">{{ book.title }}</a>
+                        <span>by {{ book.author.name }}</span>
+                        <form method="POST" action="{{ url_for('delete_book', book_id=book.id) }}" style="display:inline;">
+                            <button type="submit" class="delete-button">❌ Delete</button>
+                        </form>
+                    </li>
+                {% endfor %}
+            {% else %}
+                <p>No books available in the library.</p>
+            {% endif %}
+        </ul>
+
+        <div class="links">
+            <a href="{{ url_for('add_author') }}" class="button">Add Author</a>
+            <a href="{{ url_for('add_book') }}" class="button">Add Book</a>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2024 Book Alchemy. All rights reserved.</p>
+    </footer>
 </body>
 </html>
