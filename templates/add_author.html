@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Author</title>
+</head>
+<body>
+    <h1>Add a New Author</h1>
+
+    <!-- Display success message if author was added successfully -->
+    {% if success %}
+        <p style="color: green;">Author added successfully!</p>
+    {% endif %}
+
+    <!-- Author form -->
+    <form method="POST" action="{{ url_for('add_author') }}">
+        <label for="name">Author Name:</label><br>
+        <input type="text" id="name" name="name" required><br><br>
+
+        <label for="birth_date">Birth Date (YYYY-MM-DD):</label><br>
+        <input type="date" id="birth_date" name="birth_date"><br><br>
+
+        <label for="date_of_death">Date of Death (YYYY-MM-DD):</label><br>
+        <input type="date" id="date_of_death" name="date_of_death"><br><br>
+
+        <input type="submit" value="Add Author">
+    </form>
+
+    <br>
+    <a href="{{ url_for('home') }}">Back to Home</a>
+</body>
+</html>

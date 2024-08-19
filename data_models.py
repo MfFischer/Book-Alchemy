@@ -6,7 +6,7 @@ db = SQLAlchemy()
 
 # Define the Author model
 class Author(db.Model):
-    __tablename__ = 'authors'  # Optional: Define the table name explicitly
+    __tablename__ = 'authors'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(150), nullable=False)
@@ -22,7 +22,7 @@ class Author(db.Model):
 
 # Define the Book model
 class Book(db.Model):
-    __tablename__ = 'books'  # Optional: Define the table name explicitly
+    __tablename__ = 'books'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     isbn = db.Column(db.String(13), unique=True, nullable=False)
