@@ -8,6 +8,11 @@
 <body>
     <h1>Welcome to the Library</h1>
 
+    <!-- Display success message if any -->
+    {% if request.args.get('message') %}
+        <p style="color: green;">{{ request.args.get('message') }}</p>
+    {% endif %}
+
     <!-- Search form -->
     <form method="GET" action="{{ url_for('search') }}">
         <label for="keyword">Search for a Book:</label><br>
@@ -17,9 +22,24 @@
 
     <br><br>
 
+    <!-- List all books with delete button -->
     <ul>
-        <li><a href="{{ url_for('add_author') }}">Add Author</a></li>
-        <li><a href="{{ url_for('add_book') }}">Add Book</a></li>
+        {% if books %}
+            {% for book in books %}
+                <li>
+                    {{ book.title }} by {{ book.author.name }} (Published: {{ book.publication_year }})
+                    <form method="POST" action="{{ url_for('delete_book', book_id=book.id) }}" style="display:inline;">
+                        <button type="submit" style="color: red;">Delete</button>
+                    </form>
+                </li>
+            {% endfor %}
+        {% else %}
+            <p>No books available in the library.</p>
+        {% endif %}
     </ul>
+
+    <br>
+    <a href="{{ url_for('add_author') }}">Add Author</a><br>
+    <a href="{{ url_for('add_book') }}">Add Book</a>
 </body>
 </html>
