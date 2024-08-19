@@ -7,6 +7,16 @@
 </head>
 <body>
     <h1>Welcome to the Library</h1>
+
+    <!-- Search form -->
+    <form method="GET" action="{{ url_for('search') }}">
+        <label for="keyword">Search for a Book:</label><br>
+        <input type="text" id="keyword" name="keyword" placeholder="Enter keyword" required><br><br>
+        <input type="submit" value="Search">
+    </form>
+
+    <br><br>
+
     <ul>
         <li><a href="{{ url_for('add_author') }}">Add Author</a></li>
         <li><a href="{{ url_for('add_book') }}">Add Book</a></li>
