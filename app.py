@@ -1,7 +1,10 @@
-from flask import Flask, render_template, request, redirect, url_for
-from data_models import db, Author, Book
 import os
 from datetime import datetime
+
+from flask import Flask, render_template, request, redirect, url_for
+from flask_migrate import Migrate
+
+from data_models import db, Author, Book
 
 # Initialize the Flask application
 app = Flask(__name__)
@@ -11,8 +14,11 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{os.path.join(basedir, "data/library.sqlite")}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-# Initialize the database connection object with the Flask app
+# Bind the database instance to the app
 db.init_app(app)
+
+# Initialize Flask-Migrate with the app and database instance
+migrate = Migrate(app, db)
 
 
 @app.route('/')
@@ -65,9 +71,11 @@ def add_book():
         title = request.form['title']
         publication_year = request.form['publication_year']
         author_id = request.form['author_id']
+        rating = request.form.get('rating')  # Get the rating from the form
 
-        # Create a new Book object
-        new_book = Book(isbn=isbn, title=title, publication_year=publication_year, author_id=author_id)
+        # Create a new Book object with the rating
+        new_book = Book(isbn=isbn, title=title, publication_year=publication_year,
+                        author_id=author_id, rating=rating)
 
         # Add the new book to the session and commit to the database
         db.session.add(new_book)
@@ -152,7 +160,7 @@ def manage_deletions():
     """
     Route for managing deletions and updates of authors and books.
     Handles POST requests for deleting authors, deleting books,
-    and updating author information.
+    updating author information, and updating book ratings.
     """
     authors = Author.query.all()
     books = Book.query.all()
@@ -189,10 +197,33 @@ def manage_deletions():
             return redirect(url_for('manage_deletions',
                                     message=f"Author '{author.name}' has been updated."))
 
+        # Handle update of a book's rating
+        elif 'update_book' in request.form:
+            book_id = request.form.get('book_id')
+            book = Book.query.get_or_404(book_id)
+            book.title = request.form.get('title')
+            book.publication_year = request.form.get('publication_year')
+            book.rating = request.form.get('rating')
+            db.session.commit()
+            return redirect(url_for('manage_deletions',
+                                    message=f"Book '{book.title}' has been updated with new details."))
+
     # Render the management page with the list of authors and books
     return render_template('manage_deletions.html', authors=authors, books=books)
 
 
+@app.route('/book/<int:book_id>/rate', methods=['POST'])
+def rate_book(book_id):
+    """Route to handle rating submission for a book."""
+    book = Book.query.get_or_404(book_id)
+    rating = request.form.get('rating')
+
+    # Update the book's rating
+    book.rating = int(rating)
+    db.session.commit()
+
+    return redirect(url_for('book_detail', book_id=book_id))
+
+
 if __name__ == '__main__':
-    # Run the Flask application in debug mode
     app.run(debug=True)

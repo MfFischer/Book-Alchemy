@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manage Deletions and Updates</title>
+    <title>Library Management</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
     <header class="header">
-        <h1>Content Management</h1>
+        <h1>Library Management</h1>
     </header>
 
     <main class="main-content">
@@ -62,7 +62,23 @@
             <button type="submit" name="update_author" class="button">Update Author</button>
         </form>
 
+        <h2>Update a Book</h2>
+        <form method="POST" action="{{ url_for('manage_deletions') }}">
+            <label for="update_book_id">Select Book:</label>
+            <select name="book_id" id="update_book_id" required>
+                {% for book in books %}
+                    <option value="{{ book.id }}">{{ book.title }} by {{ book.author.name }}</option>
+                {% endfor %}
+            </select>
+            <br><br>
+            <label for="update_rating">New Rating (1-10):</label>
+            <input type="number" name="rating" id="update_rating" min="1" max="10" required>
+            <br><br>
+            <button type="submit" name="update_book" class="button">Update Book</button>
+        </form>
+
         <br>
+        <!-- Ensure the "Back to Home" button is correctly placed -->
         <a href="{{ url_for('home') }}" class="button">Back to Home</a>
     </main>
 

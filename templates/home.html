@@ -34,13 +34,16 @@
                     <li class="book-item">
                         <a href="{{ url_for('book_detail', book_id=book.id) }}">{{ book.title }}</a>
                         <span>by <a href="{{ url_for('author_detail', author_id=book.author.id) }}">{{ book.author.name }}</a></span>
+                        <!-- Display the rating if it exists -->
+                        {% if book.rating %}
+                            <span>- Rating: {{ book.rating }}/10</span>
+                        {% endif %}
                     </li>
                 {% endfor %}
             {% else %}
                 <p>No books available in the library.</p>
             {% endif %}
         </ul>
-
 
         <div class="links">
             <a href="{{ url_for('add_author') }}" class="button">Add Author</a>
