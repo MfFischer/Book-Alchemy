@@ -33,10 +33,7 @@
                 {% for book in books %}
                     <li class="book-item">
                         <a href="{{ url_for('book_detail', book_id=book.id) }}">{{ book.title }}</a>
-                        <span>by {{ book.author.name }}</span>
-                        <form method="POST" action="{{ url_for('delete_book', book_id=book.id) }}" style="display:inline;">
-                            <button type="submit" class="delete-button">❌ Delete</button>
-                        </form>
+                        <span>by <a href="{{ url_for('author_detail', author_id=book.author.id) }}">{{ book.author.name }}</a></span>
                     </li>
                 {% endfor %}
             {% else %}
@@ -44,9 +41,11 @@
             {% endif %}
         </ul>
 
+
         <div class="links">
             <a href="{{ url_for('add_author') }}" class="button">Add Author</a>
             <a href="{{ url_for('add_book') }}" class="button">Add Book</a>
+            <a href="{{ url_for('manage_deletions') }}" class="button">Manage Deletions</a>
         </div>
     </main>
 

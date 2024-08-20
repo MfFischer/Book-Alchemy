@@ -135,8 +135,62 @@ def delete_book(book_id):
 
 @app.route('/book/<int:book_id>')
 def book_detail(book_id):
+    """Route to display details for a specific book."""
     book = Book.query.get_or_404(book_id)
     return render_template('book_detail.html', book=book)
+
+
+@app.route('/author/<int:author_id>')
+def author_detail(author_id):
+    """Route to display details for a specific author."""
+    author = Author.query.get_or_404(author_id)
+    return render_template('author_detail.html', author=author)
+
+
+@app.route('/manage_deletions', methods=['GET', 'POST'])
+def manage_deletions():
+    """
+    Route for managing deletions and updates of authors and books.
+    Handles POST requests for deleting authors, deleting books,
+    and updating author information.
+    """
+    authors = Author.query.all()
+    books = Book.query.all()
+
+    if request.method == 'POST':
+        # Handle deletion of an author and all associated books
+        if 'delete_author' in request.form:
+            author_id = request.form.get('author_id')
+            author = Author.query.get_or_404(author_id)
+            db.session.delete(author)
+            db.session.commit()
+            return redirect(
+                url_for('manage_deletions',
+                        message=f"Author '{author.name}' and all associated books have been deleted.")
+            )
+
+        # Handle deletion of a specific book
+        elif 'delete_book' in request.form:
+            book_id = request.form.get('book_id')
+            book = Book.query.get_or_404(book_id)
+            db.session.delete(book)
+            db.session.commit()
+            return redirect(url_for('manage_deletions',
+                                    message=f"Book '{book.title}' has been deleted."))
+
+        # Handle update of an author's details
+        elif 'update_author' in request.form:
+            author_id = request.form.get('author_id')
+            author = Author.query.get_or_404(author_id)
+            author.name = request.form.get('name')
+            author.birth_date = request.form.get('birth_date')
+            author.date_of_death = request.form.get('date_of_death')
+            db.session.commit()
+            return redirect(url_for('manage_deletions',
+                                    message=f"Author '{author.name}' has been updated."))
+
+    # Render the management page with the list of authors and books
+    return render_template('manage_deletions.html', authors=authors, books=books)
 
 
 if __name__ == '__main__':

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Deletions and Updates</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header class="header">
+        <h1>Content Management</h1>
+    </header>
+
+    <main class="main-content">
+        <!-- Display success message if any -->
+        {% if request.args.get('message') %}
+            <div class="message success">
+                <p>{{ request.args.get('message') }}</p>
+            </div>
+        {% endif %}
+
+        <h2>Delete an Author and Their Books</h2>
+        <form method="POST" action="{{ url_for('manage_deletions') }}">
+            <label for="delete_author_id">Select Author:</label>
+            <select name="author_id" id="delete_author_id" required>
+                {% for author in authors %}
+                    <option value="{{ author.id }}">{{ author.name }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit" name="delete_author" class="delete-button">Delete Author</button>
+        </form>
+
+        <h2>Delete a Book</h2>
+        <form method="POST" action="{{ url_for('manage_deletions') }}">
+            <label for="delete_book_id">Select Book:</label>
+            <select name="book_id" id="delete_book_id" required>
+                {% for book in books %}
+                    <option value="{{ book.id }}">{{ book.title }} by {{ book.author.name }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit" name="delete_book" class="delete-button">Delete Book</button>
+        </form>
+
+        <h2>Update an Author</h2>
+        <form method="POST" action="{{ url_for('manage_deletions') }}">
+            <label for="update_author_id">Select Author:</label>
+            <select name="author_id" id="update_author_id" required>
+                {% for author in authors %}
+                    <option value="{{ author.id }}">{{ author.name }}</option>
+                {% endfor %}
+            </select>
+            <br><br>
+            <label for="update_name">New Name:</label>
+            <input type="text" name="name" id="update_name" required>
+            <br><br>
+            <label for="update_birth_date">New Birth Date:</label>
+            <input type="date" name="birth_date" id="update_birth_date">
+            <br><br>
+            <label for="update_date_of_death">New Date of Death:</label>
+            <input type="date" name="date_of_death" id="update_date_of_death">
+            <br><br>
+            <button type="submit" name="update_author" class="button">Update Author</button>
+        </form>
+
+        <br>
+        <a href="{{ url_for('home') }}" class="button">Back to Home</a>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2024 Book Alchemy. All rights reserved.</p>
+    </footer>
+</body>
+</html>
