@@ -98,17 +98,19 @@ def search():
         # Create a search pattern for case-insensitive matching
         search_pattern = f"%{keyword.lower()}%"
 
-        # Debugging: Output the search pattern
-        print(f"Search pattern: {search_pattern}")
-
         # Query the database for books matching the search pattern
         results = Book.query.filter(db.func.lower(Book.title).like(search_pattern)).all()
 
-        # Debugging: Output the search results
-        print(f"Results: {results}")
-
-        # Render the search results page
-        return render_template('search_results.html', books=results, keyword=keyword)
+        if len(results) == 1:
+            # If exactly one result is found, redirect to the book's detail page
+            book = results[0]
+            return redirect(url_for('book_detail', book_id=book.id))
+        elif len(results) > 1:
+            # If multiple results are found, render the search results page
+            return render_template('search_results.html', books=results, keyword=keyword)
+        else:
+            # If no results are found, show a message on the search results page
+            return render_template('search_results.html', books=results, keyword=keyword)
 
     # Redirect to the homepage if no keyword is provided
     return redirect(url_for('home'))
