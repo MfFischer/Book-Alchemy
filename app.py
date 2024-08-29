@@ -40,9 +40,12 @@ def add_author():
     """Route to add a new author to the database."""
     if request.method == 'POST':
         # Get the form data
-        name = request.form['name']
+        name = request.form['name'].strip()
         birth_date_str = request.form['birth_date']
         date_of_death_str = request.form['date_of_death']
+
+        if not name:
+            return render_template('add_author.html', error="Author name cannot be empty.")
 
         # Convert strings to date objects, if provided
         birth_date = datetime.strptime(birth_date_str, '%Y-%m-%d').date() if birth_date_str else None
@@ -67,11 +70,15 @@ def add_book():
     """Route to add a new book to the database."""
     if request.method == 'POST':
         # Get the form data
-        isbn = request.form['isbn']
-        title = request.form['title']
+        isbn = request.form['isbn'].strip()
+        title = request.form['title'].strip()
         publication_year = request.form['publication_year']
         author_id = request.form['author_id']
-        rating = request.form.get('rating')  # Get the rating from the form
+        rating = request.form.get('rating')
+
+        if not title or not isbn:
+            return render_template('add_book.html', error="Book title and ISBN cannot be empty.",
+                                   authors=Author.query.all())
 
         # Create a new Book object with the rating
         new_book = Book(isbn=isbn, title=title, publication_year=publication_year,
@@ -134,7 +141,7 @@ def delete_book(book_id):
 
     # If the author has no other books, delete the author
     if not author_books:
-        author = Author.query.get(author_id)
+        author = db.session.get(Author, author_id)
         if author:
             db.session.delete(author)
             db.session.commit()

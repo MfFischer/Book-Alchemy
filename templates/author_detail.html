@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ author.name }} - Author Details</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header class="header">
+        <h1>{{ author.name }}</h1>
+    </header>
+
+    <main class="main-content">
+        <h2>Author Details</h2>
+        <p><strong>Name:</strong> {{ author.name }}</p>
+        <p><strong>Birth Date:</strong> {{ author.birth_date }}</p>
+        <p><strong>Date of Death:</strong> {{ author.date_of_death }}</p>
+
+        <h3>Books by {{ author.name }}</h3>
+        {% if author.books %}
+            <ul>
+                {% for book in author.books %}
+                    <li><a href="{{ url_for('book_detail', book_id=book.id) }}">{{ book.title }}</a></li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No books found for this author.</p>
+        {% endif %}
+
+        <a href="{{ url_for('home') }}" class="button">Back to Home</a>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2024 Book Alchemy. All rights reserved.</p>
+    </footer>
+</body>
+</html>
